@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glasses 2 Go — Book an Appointment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ── Reset ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+button { cursor: pointer; font-family: inherit; }
+input { font-family: inherit; }
+
+/* ── Tokens ──────────────────────────────────────────────── */
+:root {
+  --black:      #1A1A1A;
+  --off-white:  #F4F1EB;
+  --sage:       #7A9680;
+  --sage-light: #EBF0EC;
+  --mid:        #888;
+  --border:     rgba(26,26,26,0.13);
+  --serif:      'Cormorant Garamond', Georgia, serif;
+  --sans:       'DM Sans', system-ui, sans-serif;
+}
+
+/* ── Page ────────────────────────────────────────────────── */
+body {
+  font-family: var(--sans);
+  background: #EDEAE3;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+/* ── Hero wrapper ────────────────────────────────────────── */
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  max-width: 1100px;
+  min-height: 560px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+}
+
+/* ── Left panel ──────────────────────────────────────────── */
+.hero__left {
+  background: var(--black);
+  color: #fff;
+  padding: 3.5rem 3rem 2.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hero__eyebrow {
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--sage);
+  margin-bottom: 1.5rem;
+}
+
+.hero__headline {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(2.5rem, 4.5vw, 3.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+
+.hero__headline span { display: block; }
+.hero__headline em   { display: block; font-style: italic; color: var(--sage); }
+
+.hero__subtext {
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.75;
+  max-width: 280px;
+  font-weight: 300;
+}
+
+.hero__stats {
+  display: flex;
+  gap: 2.25rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: 2rem;
+}
+
+.hero__stat-num {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1;
+}
+
+.hero__stat-label {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-top: 0.3rem;
+}
+
+/* ── Right panel ─────────────────────────────────────────── */
+.hero__right {
+  background: var(--off-white);
+  padding: 3rem 2.75rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.book__eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sage);
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+
+.book__title {
+  font-family: var(--serif);
+  font-size: 1.875rem;
+  font-weight: 400;
+  color: var(--black);
+  margin-bottom: 1.75rem;
+  line-height: 1.2;
+}
+
+/* ── Step tabs ───────────────────────────────────────────── */
+.bh-steps {
+  display: flex;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.bh-step {
+  flex: 1;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  padding: 0 0.25rem 0.75rem;
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--mid);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: color 0.18s;
+  white-space: nowrap;
+}
+
+.bh-step:hover { color: var(--black); }
+
+.bh-step--active {
+  border-bottom-color: var(--black);
+  color: var(--black);
+  font-weight: 500;
+}
+
+.bh-step__num {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--sage);
+  line-height: 1;
+}
+
+/* ── Panel container ─────────────────────────────────────── */
+.bh-panels {
+  position: relative;
+  flex: 1;
+}
+
+.bh-panel {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.bh-panel--active {
+  opacity: 1;
+  pointer-events: auto;
+  position: relative;
+}
+
+/* ── Services ────────────────────────────────────────────── */
+.bh-services {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.bh-service {
+  padding: 1rem 1rem 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: none;
+  text-align: left;
+  color: var(--black);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.bh-service:hover { border-color: var(--sage); }
+
+.bh-service--selected {
+  border-color: var(--black);
+  background: rgba(26,26,26,0.04);
+}
+
+.bh-service__name {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+}
+
+.bh-service__meta {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--mid);
+}
+
+/* ── Labels ──────────────────────────────────────────────── */
+.bh-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 0.625rem;
+}
+
+/* ── Dates ───────────────────────────────────────────────── */
+.bh-dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.bh-date {
+  padding: 0.5rem 0.125rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: none;
+  text-align: center;
+  color: var(--black);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.bh-date:hover:not(:disabled) { border-color: var(--sage); }
+.bh-date:disabled { opacity: 0.25; cursor: not-allowed; }
+
+.bh-date--selected {
+  background: var(--black);
+  border-color: var(--black);
+  color: var(--off-white);
+}
+
+.bh-date__day {
+  display: block;
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 0.2rem;
+}
+
+.bh-date__num {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* ── Times ───────────────────────────────────────────────── */
+.bh-times {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.35rem;
+  margin-bottom: 0.25rem;
+}
+
+.bh-time {
+  padding: 0.5rem 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: none;
+  font-size: 0.8rem;
+  color: var(--black);
+  text-align: center;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.bh-time:hover { border-color: var(--sage); }
+
+.bh-time--selected {
+  background: var(--black);
+  border-color: var(--black);
+  color: var(--off-white);
+}
+
+/* ── Form ────────────────────────────────────────────────── */
+.bh-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.bh-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.75rem;
+}
+
+.bh-row .bh-field { margin-bottom: 0; }
+
+.bh-field label {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.bh-field input {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 0.875rem;
+  background: white;
+  color: var(--black);
+  width: 100%;
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+
+.bh-field input::placeholder { color: rgba(26,26,26,0.3); }
+.bh-field input:focus { outline: none; border-color: var(--sage); }
+
+.bh-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+  color: var(--mid);
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.bh-check input { margin-top: 0.15rem; flex-shrink: 0; accent-color: var(--black); }
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.bh-nav {
+  display: flex;
+  margin-top: auto;
+  padding-top: 1.25rem;
+}
+
+.bh-nav--right  { justify-content: flex-end; }
+.bh-nav--split  { justify-content: space-between; }
+
+.bh-btn {
+  padding: 0.7rem 1.5rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.bh-btn--primary {
+  background: var(--black);
+  color: var(--off-white);
+  border: 1px solid var(--black);
+}
+
+.bh-btn--primary:hover { opacity: 0.82; }
+
+.bh-btn--ghost {
+  background: none;
+  color: var(--mid);
+  border: 1px solid var(--border);
+}
+
+.bh-btn--ghost:hover { border-color: var(--black); color: var(--black); }
+
+/* ── Confirmation ────────────────────────────────────────── */
+.bh-confirm {
+  background: var(--sage-light);
+  border: 1px solid rgba(122,150,128,0.25);
+  border-radius: 4px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.bh-confirm__tick {
+  width: 2.75rem;
+  height: 2.75rem;
+  background: var(--sage);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.bh-confirm__title {
+  font-family: var(--serif);
+  font-size: 1.625rem;
+  font-weight: 400;
+  color: var(--black);
+}
+
+.bh-confirm__detail {
+  font-size: 0.875rem;
+  color: var(--black);
+  line-height: 1.8;
+}
+
+.bh-confirm__note {
+  font-size: 0.75rem;
+  color: var(--mid);
+  line-height: 1.7;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 780px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero__left { padding: 2.5rem 1.75rem 2rem; }
+  .hero__right { padding: 2rem 1.75rem; }
+  .bh-dates { grid-template-columns: repeat(4, 1fr); }
+  .bh-services { grid-template-columns: 1fr; }
+  .bh-row { grid-template-columns: 1fr; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+
+  <!-- ── Left ── -->
+  <div class="hero__left">
+    <div>
+      <p class="hero__eyebrow">Cricklewood Broadway · London NW2</p>
+      <h1 class="hero__headline">
+        <span>See better.</span>
+        <em>Live better.</em>
+        <span>Start here.</span>
+      </h1>
+      <p class="hero__subtext">Independent opticians offering comprehensive eye care and curated eyewear. Your vision is our expertise.</p>
+    </div>
+    <div class="hero__stats">
+      <div>
+        <span class="hero__stat-num">4.9</span>
+        <span class="hero__stat-label">Google rating</span>
+      </div>
+      <div>
+        <span class="hero__stat-num">250+</span>
+        <span class="hero__stat-label">Reviews</span>
+      </div>
+      <div>
+        <span class="hero__stat-num">15+</span>
+        <span class="hero__stat-label">Yrs experience</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Right ── -->
+  <div class="hero__right">
+    <p class="book__eyebrow">Book your appointment</p>
+    <h2 class="book__title">Reserve your visit</h2>
+
+    <!-- Step tabs -->
+    <div class="bh-steps" role="tablist">
+      <button class="bh-step bh-step--active" id="tab-1" role="tab" aria-selected="true"  aria-controls="panel-1">
+        <span class="bh-step__num">01</span>Service
+      </button>
+      <button class="bh-step" id="tab-2" role="tab" aria-selected="false" aria-controls="panel-2">
+        <span class="bh-step__num">02</span>Date
+      </button>
+      <button class="bh-step" id="tab-3" role="tab" aria-selected="false" aria-controls="panel-3">
+        <span class="bh-step__num">03</span>Details
+      </button>
+      <button class="bh-step" id="tab-4" role="tab" aria-selected="false" aria-controls="panel-4">
+        <span class="bh-step__num">04</span>Confirm
+      </button>
+    </div>
+
+    <!-- Panels -->
+    <div class="bh-panels" id="panels">
+
+      <!-- Step 1 -->
+      <div class="bh-panel bh-panel--active" id="panel-1" role="tabpanel">
+        <div class="bh-services">
+          <button class="bh-service bh-service--selected" data-service="Full Eye Examination" data-dur="30 min" data-price="From £45">
+            <span class="bh-service__name">Full Eye Examination</span>
+            <span class="bh-service__meta">30 min · From £45</span>
+          </button>
+          <button class="bh-service" data-service="Contact Lens Fitting" data-dur="45 min" data-price="From £60">
+            <span class="bh-service__name">Contact Lens Fitting</span>
+            <span class="bh-service__meta">45 min · From £60</span>
+          </button>
+          <button class="bh-service" data-service="Dispensing Appointment" data-dur="20 min" data-price="Free">
+            <span class="bh-service__name">Dispensing Appointment</span>
+            <span class="bh-service__meta">20 min · Free</span>
+          </button>
+          <button class="bh-service" data-service="Children's Eye Test" data-dur="30 min" data-price="NHS free">
+            <span class="bh-service__name">Children's Eye Test</span>
+            <span class="bh-service__meta">30 min · NHS free</span>
+          </button>
+        </div>
+        <div class="bh-nav bh-nav--right">
+          <button class="bh-btn bh-btn--primary" onclick="goStep(2)">Select date →</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="bh-panel" id="panel-2" role="tabpanel">
+        <p class="bh-label">Choose a date</p>
+        <div class="bh-dates" id="dates"></div>
+        <p class="bh-label" style="margin-top:0.875rem">Available times</p>
+        <div class="bh-times" id="times"></div>
+        <div class="bh-nav bh-nav--split">
+          <button class="bh-btn bh-btn--ghost" onclick="goStep(1)">← Back</button>
+          <button class="bh-btn bh-btn--primary" onclick="goStep(3)">Your details →</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="bh-panel" id="panel-3" role="tabpanel">
+        <div class="bh-row">
+          <div class="bh-field">
+            <label for="fname">First name</label>
+            <input type="text" id="fname" placeholder="Jane" autocomplete="given-name">
+          </div>
+          <div class="bh-field">
+            <label for="lname">Last name</label>
+            <input type="text" id="lname" placeholder="Smith" autocomplete="family-name">
+          </div>
+        </div>
+        <div class="bh-field">
+          <label for="email">Email address</label>
+          <input type="email" id="email" placeholder="jane@example.com" autocomplete="email">
+        </div>
+        <div class="bh-field">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" placeholder="+44 7700 000000" autocomplete="tel">
+        </div>
+        <label class="bh-check">
+          <input type="checkbox" id="new-patient">
+          <span>I'm a new patient — I haven't visited Glasses 2 Go before</span>
+        </label>
+        <label class="bh-check">
+          <input type="checkbox" id="reminders" checked>
+          <span>Send me appointment reminders by email and SMS</span>
+        </label>
+        <div class="bh-nav bh-nav--split">
+          <button class="bh-btn bh-btn--ghost" onclick="goStep(2)">← Back</button>
+          <button class="bh-btn bh-btn--primary" onclick="submit()">Confirm booking →</button>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="bh-panel" id="panel-4" role="tabpanel">
+        <div class="bh-confirm">
+          <div class="bh-confirm__tick" aria-hidden="true">✓</div>
+          <h3 class="bh-confirm__title">You're booked in</h3>
+          <div class="bh-confirm__detail" id="confirm-detail"></div>
+          <p class="bh-confirm__note">A confirmation has been sent to your email.<br>We'll remind you 24 hours before your visit.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+
+  // ── State ─────────────────────────────────────────────
+  var state = { step: 1, service: null, date: null, time: null };
+
+  // ── Availability (fake prototype data) ────────────────
+  var today = new Date();
+  var avail = {};
+  for (var i = 1; i <= 21; i++) {
+    var d = new Date(today);
+    d.setDate(today.getDate() + i);
+    var dow = d.getDay();
+    if (dow === 0) continue;
+    var key = d.toISOString().slice(0, 10);
+    var slots = dow === 6
+      ? ['9:00','9:30','10:00','10:30','11:00','11:30']
+      : ['9:00','9:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30'];
+    slots.splice(Math.floor(Math.random() * (slots.length - 2)) + 1, 1);
+    avail[key] = slots;
+  }
+
+  // ── Helpers ───────────────────────────────────────────
+  function qsa(sel, root) { return Array.from((root || document).querySelectorAll(sel)); }
+
+  // ── Step navigation ───────────────────────────────────
+  window.goStep = function (n) {
+    qsa('.bh-panel')[state.step - 1].classList.remove('bh-panel--active');
+    qsa('.bh-step')[state.step - 1].classList.remove('bh-step--active');
+    qsa('.bh-step')[state.step - 1].setAttribute('aria-selected', 'false');
+    state.step = n;
+    qsa('.bh-panel')[n - 1].classList.add('bh-panel--active');
+    qsa('.bh-step')[n - 1].classList.add('bh-step--active');
+    qsa('.bh-step')[n - 1].setAttribute('aria-selected', 'true');
+    if (n === 2) renderDates();
+  };
+
+  // ── Tab clicks ────────────────────────────────────────
+  qsa('.bh-step').forEach(function (tab, i) {
+    tab.addEventListener('click', function () { goStep(i + 1); });
+  });
+
+  // ── Services ──────────────────────────────────────────
+  qsa('.bh-service').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      qsa('.bh-service').forEach(function (b) { b.classList.remove('bh-service--selected'); });
+      btn.classList.add('bh-service--selected');
+      state.service = { name: btn.dataset.service, dur: btn.dataset.dur, price: btn.dataset.price };
+    });
+  });
+
+  // Pre-select first
+  var first = document.querySelector('.bh-service');
+  if (first) {
+    state.service = { name: first.dataset.service, dur: first.dataset.dur, price: first.dataset.price };
+  }
+
+  // ── Dates ─────────────────────────────────────────────
+  function renderDates() {
+    var container = document.getElementById('dates');
+    container.innerHTML = '';
+    var days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var shown = 0;
+    var d = new Date(today);
+    while (shown < 7) {
+      d = new Date(today);
+      d.setDate(today.getDate() + shown + 1);
+      // skip to next available
+      while (!avail[d.toISOString().slice(0, 10)]) {
+        d.setDate(d.getDate() + 1);
+      }
+      var key = d.toISOString().slice(0, 10);
+      var btn = document.createElement('button');
+      btn.className = 'bh-date' + (state.date === key ? ' bh-date--selected' : '');
+      btn.dataset.date = key;
+      btn.innerHTML = '<span class="bh-date__day">' + days[d.getDay()] + '</span><span class="bh-date__num">' + d.getDate() + '</span>';
+      btn.addEventListener('click', function () {
+        qsa('.bh-date').forEach(function (b) { b.classList.remove('bh-date--selected'); });
+        this.classList.add('bh-date--selected');
+        state.date = this.dataset.date;
+        state.time = null;
+        renderTimes(state.date);
+      });
+      if (!state.date && shown === 0) {
+        btn.classList.add('bh-date--selected');
+        state.date = key;
+        setTimeout(function () { renderTimes(key); }, 0);
+      }
+      container.appendChild(btn);
+      shown++;
+    }
+  }
+
+  function renderTimes(key) {
+    var container = document.getElementById('times');
+    container.innerHTML = '';
+    (avail[key] || []).forEach(function (slot) {
+      var btn = document.createElement('button');
+      btn.className = 'bh-time';
+      btn.textContent = slot;
+      btn.addEventListener('click', function () {
+        qsa('.bh-time').forEach(function (b) { b.classList.remove('bh-time--selected'); });
+        btn.classList.add('bh-time--selected');
+        state.time = slot;
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  // ── Submit ────────────────────────────────────────────
+  window.submit = function () {
+    var fname = document.getElementById('fname').value.trim();
+    var lname = document.getElementById('lname').value.trim();
+    var email = document.getElementById('email').value.trim();
+    if (!fname || !lname) { alert('Please enter your name.'); return; }
+    if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+    if (!state.service) { alert('Please select a service.'); goStep(1); return; }
+    if (!state.date || !state.time) { alert('Please select a date and time.'); goStep(2); return; }
+    var dateStr = new Date(state.date + 'T12:00:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+    document.getElementById('confirm-detail').innerHTML =
+      '<strong>' + state.service.name + '</strong><br>' +
+      dateStr + ' · ' + state.time + '<br>' +
+      '62 Cricklewood Broadway, London NW2';
+    goStep(4);
+  };
+
+  // ── Lock panel height ─────────────────────────────────
+  function lockHeight() {
+    var panels = document.getElementById('panels');
+    var tallest = 0;
+    qsa('.bh-panel').forEach(function (p) {
+      p.style.position = 'static';
+      p.style.opacity = '1';
+      var h = p.offsetHeight;
+      if (h > tallest) tallest = h;
+      p.style.position = '';
+      p.style.opacity = '';
+    });
+    panels.style.minHeight = (tallest + 32) + 'px';
+  }
+
+  window.addEventListener('load', function () { setTimeout(lockHeight, 50); });
+  window.addEventListener('resize', function () { clearTimeout(window._lht); window._lht = setTimeout(lockHeight, 150); });
+
+})();
+</script>
+</body>
+</html>
